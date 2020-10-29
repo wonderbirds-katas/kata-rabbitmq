@@ -1,12 +1,14 @@
 ﻿using System;
-using System.Threading;
+using System.Threading.Tasks;
 using RabbitMQ.Client;
 
 namespace kata_rabbitmq.robot.app
 {
     public class Program
     {
-        public static void Main(string[] args)
+        private static readonly AsyncAutoResetEvent IsExitRequested = new AsyncAutoResetEvent();
+        
+        public static async Task Main(string[] args)
         {
             var connectionFactory = new ConnectionFactory();
             connectionFactory.HostName = Environment.GetEnvironmentVariable("RABBITMQ_HOSTNAME");
@@ -22,10 +24,15 @@ namespace kata_rabbitmq.robot.app
             channel.ExchangeDeclare("robot", ExchangeType.Direct, durable: false, autoDelete: true, arguments: null);
             channel.QueueDeclare("sensors", durable: false, exclusive: false, autoDelete: true, arguments: null);
 
-            Thread.Sleep(2000);
+            await IsExitRequested.WaitAsync();
 
             channel.Close();
             connection.Close();
+        }
+
+        public static void Exit()
+        {
+            IsExitRequested.Set();
         }
     }
 }
