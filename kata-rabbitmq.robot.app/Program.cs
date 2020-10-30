@@ -6,9 +6,7 @@ namespace kata_rabbitmq.robot.app
 {
     public class Program
     {
-        private static readonly AsyncAutoResetEvent IsExitRequested = new AsyncAutoResetEvent();
-        
-        public static async Task Main(string[] args)
+        public static void Main(string[] args)
         {
             var connectionFactory = new ConnectionFactory();
             connectionFactory.HostName = Environment.GetEnvironmentVariable("RABBITMQ_HOSTNAME");
@@ -24,15 +22,12 @@ namespace kata_rabbitmq.robot.app
             channel.ExchangeDeclare("robot", ExchangeType.Direct, durable: false, autoDelete: true, arguments: null);
             channel.QueueDeclare("sensors", durable: false, exclusive: false, autoDelete: true, arguments: null);
 
-            await IsExitRequested.WaitAsync();
-
+            Console.WriteLine("Press ENTER to shutdown the robot.");
+            Console.ReadKey();
+            Console.WriteLine("Shutting down ...");
+            
             channel.Close();
             connection.Close();
-        }
-
-        public static void Exit()
-        {
-            IsExitRequested.Set();
         }
     }
 }
