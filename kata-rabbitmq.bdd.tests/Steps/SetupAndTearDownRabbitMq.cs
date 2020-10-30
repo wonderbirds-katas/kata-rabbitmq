@@ -12,7 +12,7 @@ namespace kata_rabbitmq.bdd.tests.Steps
     public class SetupAndTearDownRabbitMq
     {
         [BeforeTestRun]
-        public static async Task BeforeTestRun()
+        public static async Task StartRabbitMqContainer()
         {
             var testcontainersBuilder = new TestcontainersBuilder<RabbitMqTestcontainer>()
                 .WithMessageBroker(new RabbitMqTestcontainerConfiguration
@@ -23,15 +23,25 @@ namespace kata_rabbitmq.bdd.tests.Steps
 
             RabbitMq.Container = testcontainersBuilder.Build();
             await RabbitMq.Container.StartAsync();
-
+        }
+        
+        [BeforeFeature]
+        public static void ConnectToRabbitMq()
+        {
             var connectionFactory = new ConnectionFactory { Uri = new Uri(RabbitMq.Container.ConnectionString) };
             RabbitMq.Connection = connectionFactory.CreateConnection();
-
             RabbitMq.Channel = RabbitMq.Connection.CreateModel();
+        }
+        
+        [AfterFeature]
+        public static void DisconnectFromRabbitMq()
+        {
+            RabbitMq.Channel.Close();
+            RabbitMq.Connection.Close();
         }
 
         [AfterTestRun]
-        public static async Task AfterTestRun()
+        public static async Task ShutdownRabbitMqContainer()
         {
             await RabbitMq.Container.CleanUpAsync();
             await RabbitMq.Container.DisposeAsync();

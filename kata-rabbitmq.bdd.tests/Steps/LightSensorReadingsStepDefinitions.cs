@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using kata_rabbitmq.robot.app;
 using TechTalk.SpecFlow;
@@ -19,30 +20,24 @@ namespace kata_rabbitmq.bdd.tests.Steps
             _testOutputHelper = testOutputHelper;
         }
 
-        [BeforeScenario]
-        public void BeforeScenario()
+        [AfterScenario("LightSensorReadings")]
+        public void AfterScenario()
+        {
+            _testOutputHelper.WriteLine("Requesting Program.Exit ...");
+            Program.Exit();
+            _mainTask.Wait();
+            _testOutputHelper.WriteLine("OK");
+        }
+
+        [Given("the robot app is started")]
+        public void GivenTheRobotAppIsStarted()
         {
             Environment.SetEnvironmentVariable("RABBITMQ_HOSTNAME", RabbitMq.Container.Hostname);
             Environment.SetEnvironmentVariable("RABBITMQ_PORT", RabbitMq.Container.Port.ToString());
             Environment.SetEnvironmentVariable("RABBITMQ_USERNAME", RabbitMq.Container.Username);
             Environment.SetEnvironmentVariable("RABBITMQ_PASSWORD", RabbitMq.Container.Password);
 
-            _testOutputHelper.WriteLine("Running the Program.Main function ...");
             _mainTask = Program.Main(null);
-        }
-
-        [AfterScenario]
-        public void AfterScenario()
-        {
-            _testOutputHelper.WriteLine("Requesting Program.Exit ...");
-            Program.Exit();
-            _mainTask.Wait();
-            _testOutputHelper.WriteLine("Program.Main has exited");
-        }
-
-        [Given("the robot app is started")]
-        public void GivenTheRobotAppIsStarted()
-        {
         }
         
         [When("the sensor queue is checked")]
@@ -53,13 +48,12 @@ namespace kata_rabbitmq.bdd.tests.Steps
                 _testOutputHelper.WriteLine("Testing whether robot:sensors exists ...");
                 RabbitMq.Channel.ExchangeDeclarePassive("robot");
                 RabbitMq.Channel.QueueDeclarePassive("sensors");
-                _isSensorQueuePresent = true;
+
                 _testOutputHelper.WriteLine("robot:sensors exists");
+                _isSensorQueuePresent = true;
             }
             catch (Exception e)
             {
-                // If one of the passive *Declare* functions fails, then the exchange
-                // or channel does not exist.
                 _testOutputHelper.WriteLine($"robot:sensors does not exist. Exception: {e.Message}");
                 _isSensorQueuePresent = false;
             }
