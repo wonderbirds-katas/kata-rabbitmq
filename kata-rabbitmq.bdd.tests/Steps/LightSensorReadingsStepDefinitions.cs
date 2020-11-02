@@ -1,10 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
-using System.Threading.Tasks;
-using kata_rabbitmq.robot.app;
 using Microsoft.VisualStudio.TestPlatform.PlatformAbstractions;
 using TechTalk.SpecFlow;
 using Xunit;
@@ -28,8 +25,13 @@ namespace kata_rabbitmq.bdd.tests.Steps
         public void AfterScenario()
         {
             _testOutputHelper.WriteLine("Stopping robot application ...");
-            _robotProcess.StandardInput.WriteLine("123");
+            _robotProcess.StandardInput.WriteLine("");
             _robotProcess.WaitForExit(2000);
+            _robotProcess.Kill();
+
+            _testOutputHelper.WriteLine(_robotProcess.StandardOutput.ReadToEnd());
+            _testOutputHelper.WriteLine(_robotProcess.StandardError.ReadToEnd());
+            
             _testOutputHelper.WriteLine("OK");
         }
 
@@ -37,14 +39,15 @@ namespace kata_rabbitmq.bdd.tests.Steps
         public void GivenTheRobotAppIsStarted()
         {
             var currentDirectory = Directory.GetCurrentDirectory();
-            var robotAppRelativeDir = Path.Combine(currentDirectory, "..", "..", "..", "..", "kata-rabbitmq.robot.app", "bin", "Debug", "netcoreapp3.1");
+            var robotAppRelativeDir = Path.Combine(currentDirectory, "..", "..", "..", "..");
             var robotAppFullDir = Path.GetFullPath(robotAppRelativeDir);
-            var robotAppFullPath = Path.Combine(robotAppFullDir, "kata-rabbitmq.robot.app.dll");
             
             var robotProcessStartInfo = new ProcessStartInfo("dotnet");
             robotProcessStartInfo.UseShellExecute = false;
             robotProcessStartInfo.RedirectStandardInput = true;
-            robotProcessStartInfo.Arguments = $"run \"{robotAppFullPath}\"";
+            robotProcessStartInfo.RedirectStandardOutput = true;
+            robotProcessStartInfo.RedirectStandardError = true;
+            robotProcessStartInfo.Arguments = $"run --project \"kata-rabbitmq.robot.app\"";
             robotProcessStartInfo.WorkingDirectory = robotAppFullDir;
 
             robotProcessStartInfo.AddEnvironmentVariable("RABBITMQ_HOSTNAME", RabbitMq.Container.Hostname);
@@ -53,7 +56,11 @@ namespace kata_rabbitmq.bdd.tests.Steps
             robotProcessStartInfo.AddEnvironmentVariable("RABBITMQ_PASSWORD", RabbitMq.Container.Password);
             
             _robotProcess = Process.Start(robotProcessStartInfo);
+            
             Thread.Sleep(1000);
+            
+            _testOutputHelper.WriteLine(_robotProcess.StandardOutput.ReadToEnd());
+            _testOutputHelper.WriteLine(_robotProcess.StandardError.ReadToEnd());
         }
         
         [When("the sensor queue is checked")]
