@@ -56,6 +56,14 @@ namespace kata_rabbitmq.bdd.tests.Steps
             robotProcessStartInfo.AddEnvironmentVariable("RABBITMQ_PASSWORD", RabbitMq.Container.Password);
             
             _robotProcess = Process.Start(robotProcessStartInfo);
+
+            string startupMessage;
+            do
+            {
+                startupMessage = _robotProcess.StandardOutput.ReadLine();
+                _testOutputHelper.WriteLine(startupMessage);
+            }
+            while (!startupMessage.Contains("Press ENTER to shutdown the robot."));
         }
         
         [When("the sensor queue is checked")]
