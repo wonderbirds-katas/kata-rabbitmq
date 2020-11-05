@@ -1,7 +1,6 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Threading;
 using Microsoft.VisualStudio.TestPlatform.PlatformAbstractions;
 using TechTalk.SpecFlow;
 using Xunit;
@@ -56,14 +55,16 @@ namespace kata_rabbitmq.bdd.tests.Steps
             robotProcessStartInfo.AddEnvironmentVariable("RABBITMQ_PASSWORD", RabbitMq.Container.Password);
             
             _robotProcess = Process.Start(robotProcessStartInfo);
+            Assert.NotNull(_robotProcess);
 
+            const string expectedMessageAfterRabbitMqConnected = "Press ENTER to shutdown the robot.";
             string startupMessage;
             do
             {
                 startupMessage = _robotProcess.StandardOutput.ReadLine();
                 _testOutputHelper.WriteLine(startupMessage);
             }
-            while (!startupMessage.Contains("Press ENTER to shutdown the robot."));
+            while (!startupMessage.Contains(expectedMessageAfterRabbitMqConnected));
         }
         
         [When("the sensor queue is checked")]
