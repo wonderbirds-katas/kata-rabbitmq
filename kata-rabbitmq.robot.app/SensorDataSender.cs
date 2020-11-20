@@ -9,20 +9,17 @@ namespace kata_rabbitmq.robot.app
 {
     public class SensorDataSender : BackgroundService
     {
+        private readonly ILogger<SensorDataSender> _logger;
+
+        public SensorDataSender(ILogger<SensorDataSender> logger)
+        {
+            _logger = logger;
+        }
+
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            using var loggerFactory = LoggerFactory.Create(builder =>
-            {
-                builder
-                    .AddFilter("Microsoft", LogLevel.Warning)
-                    .AddFilter("System", LogLevel.Warning)
-                    .AddFilter("kata_rabbitmq.robot.app.Program", LogLevel.Debug)
-                    .AddConsole();
-            });
-            var logger = loggerFactory.CreateLogger<Program>();
-
-            logger.LogInformation("Waiting for cancellation request");
-            stoppingToken.Register(() => logger.LogInformation("STOP request received"));
+            _logger.LogDebug("Waiting for cancellation request");
+            stoppingToken.Register(() => _logger.LogInformation("STOP request received"));
             stoppingToken.ThrowIfCancellationRequested();
 
             IModel channel = null;
@@ -34,7 +31,7 @@ namespace kata_rabbitmq.robot.app
                 {
                     if (channel == null)
                     {
-                        logger.LogDebug("Connecting to RabbitMQ ...");
+                        _logger.LogDebug("Connecting to RabbitMQ ...");
                         try
                         {
                             var connectionFactory = new ConnectionFactory();
@@ -45,6 +42,10 @@ namespace kata_rabbitmq.robot.app
                             connectionFactory.Password = Environment.GetEnvironmentVariable("RABBITMQ_PASSWORD");
                             connectionFactory.VirtualHost = "/";
                             connectionFactory.ClientProvidedName = "app:robot";
+                            
+                            _logger.LogDebug($"RabbitMQ HostName: {connectionFactory.HostName}");
+                            _logger.LogDebug($"RabbitMQ Port: {connectionFactory.Port}");
+                            _logger.LogDebug($"RabbitMQ UserName: {connectionFactory.UserName}");
 
                             connection = connectionFactory.CreateConnection();
                             channel = connection.CreateModel();
@@ -54,11 +55,11 @@ namespace kata_rabbitmq.robot.app
                             channel.QueueDeclare("sensors", durable: false, exclusive: false, autoDelete: true,
                                 arguments: null);
 
-                            logger.LogDebug("Established connection to RabbitMQ");
+                            _logger.LogDebug("Established connection to RabbitMQ");
                         }
                         catch (Exception e)
                         {
-                            logger.LogDebug(e.Message);
+                            _logger.LogDebug(e.Message);
                             channel = null;
                             connection = null;
                         }
@@ -73,16 +74,16 @@ namespace kata_rabbitmq.robot.app
             }
             catch (Exception e)
             {
-                logger.LogCritical(e.ToString());
+                _logger.LogCritical(e.ToString());
             }
             finally
             {
-                logger.LogInformation("Shutting down ...");
+                _logger.LogInformation("Shutting down ...");
 
                 channel?.Close();
                 connection?.Close();
                 
-                logger.LogDebug("Shutdown complete.");
+                _logger.LogDebug("Shutdown complete.");
             } 
         }
     }
