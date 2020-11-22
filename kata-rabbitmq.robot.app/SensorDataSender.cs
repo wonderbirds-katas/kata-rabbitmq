@@ -18,7 +18,7 @@ namespace kata_rabbitmq.robot.app
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogDebug("Waiting for cancellation request");
+            _logger.LogInformation("Waiting for cancellation request");
             stoppingToken.Register(() => _logger.LogInformation("STOP request received"));
             stoppingToken.ThrowIfCancellationRequested();
 
