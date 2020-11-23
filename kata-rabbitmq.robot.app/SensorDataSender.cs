@@ -55,7 +55,7 @@ namespace kata_rabbitmq.robot.app
                             channel.QueueDeclare("sensors", durable: false, exclusive: false, autoDelete: true,
                                 arguments: null);
 
-                            _logger.LogDebug("Established connection to RabbitMQ");
+                            _logger.LogInformation("Established connection to RabbitMQ");
                         }
                         catch (Exception e)
                         {
