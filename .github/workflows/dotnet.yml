@@ -24,7 +24,7 @@ jobs:
     - name: Build
       run: dotnet build --configuration Debug --no-restore
     - name: Test with coverage
-      run: dotnet test --no-restore --verbosity normal
+      run: dotnet test --no-restore --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput='./TestResults/coverage.cobertura.xml'
     - name: Generate coverage reports
       run: reportgenerator "-reports:kata-rabbitmq.bdd.tests/TestResults/*.xml" "-targetdir:kata-rabbitmq.bdd.tests/TestResults/report" "-reporttypes:Html;lcov" "-title:Kata RabbitMQ"
     - name: Attach coverage report to build artifacts
