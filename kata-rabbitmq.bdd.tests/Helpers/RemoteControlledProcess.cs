@@ -104,6 +104,7 @@ namespace katarabbitmq.bdd.tests.Helpers
                 WorkingDirectory = _appDir
             };
 
+            // TODO: Pass the environment variables to TestProcessWrapper, then remove RemoteControlledProcess (replace by TestProcessWrapper)
             processStartInfo.AddEnvironmentVariable("RabbitMq__HostName", RabbitMq.Hostname);
             processStartInfo.AddEnvironmentVariable("RabbitMq__Port",
                 RabbitMq.Port.ToString(CultureInfo.InvariantCulture));

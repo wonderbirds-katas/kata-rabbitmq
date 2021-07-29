@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using katarabbitmq.bdd.tests.Helpers;
+using RemoteControlledProcess;
 using TechTalk.SpecFlow;
 using Xunit;
 using Xunit.Abstractions;
@@ -11,9 +11,9 @@ namespace katarabbitmq.bdd.tests.Steps
     [Binding]
     public class SharedStepDefinitions : IDisposable
     {
-        public static List<RemoteControlledProcess> Clients { get;  } = new();
+        public static List<TestProcessWrapper> Clients { get;  } = new();
         private readonly ITestOutputHelper _testOutputHelper;
-        public static RemoteControlledProcess Robot { get; private set; }
+        public static TestProcessWrapper Robot { get; private set; }
 
         private bool _isDisposed;
 
@@ -25,7 +25,8 @@ namespace katarabbitmq.bdd.tests.Steps
         {
             for (var clientIndex = 0; clientIndex < numberOfClients; clientIndex++)
             {
-                var client = new RemoteControlledProcess("kata-rabbitmq.client.app");
+                // TODO: One of the clients should have true for isCoverletEnabled.
+                var client = new TestProcessWrapper("kata-rabbitmq.client.app", false);
                 client.TestOutputHelper = _testOutputHelper;
                 client.Start();
 
@@ -34,7 +35,7 @@ namespace katarabbitmq.bdd.tests.Steps
 
             Assert.True(Clients.All(c => c.IsRunning));
 
-            Robot = new RemoteControlledProcess("kata-rabbitmq.robot.app");
+            Robot = new TestProcessWrapper("kata-rabbitmq.robot.app", true);
             Robot.TestOutputHelper = _testOutputHelper;
             Robot.Start();
 
