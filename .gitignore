@@ -1,3 +1,6 @@
+# Coverage reports
+report
+
 # Code Metrics - metrix++
 /metrixpp.db
 
@@ -6,6 +9,7 @@ dupfinder-report.*
 
 #SpecFlow Stuff
 *.feature.cs
+SpecFlow/
 
 ### MacOS filesystem helpers ###
 .DS_Store
@@ -399,6 +403,7 @@ MigrationBackup/
 .idea/**/usage.statistics.xml
 .idea/**/dictionaries
 .idea/**/shelf
+.idea/**/indexLayout.xml
 
 # Generated files
 .idea/**/contentModel.xml
@@ -423,7 +428,8 @@ MigrationBackup/
 # .idea/artifacts
 # .idea/compiler.xml
 # .idea/jarRepositories.xml
-# .idea/modules.xml
+.idea/**/modules.xml
+.idea/**/riderModule.iml
 # .idea/*.iml
 # .idea/modules
 # *.iml
@@ -463,4 +469,3 @@ fabric.properties
 .idea/caches/build_file_checksums.ser
 
 # End of https://www.toptal.com/developers/gitignore/api/rider
-
