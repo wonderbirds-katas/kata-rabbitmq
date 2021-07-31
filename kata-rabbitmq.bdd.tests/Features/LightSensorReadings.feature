@@ -9,7 +9,6 @@ Feature: Light Sensor Readings
     When the robot has sent at least 1 sensor value
     Then each client received all sent sensor values
 
-  @Ignore
   Scenario: 3 clients receive light sensor readings
     Given the robot and 3 clients are running
     When the robot has sent at least 1 sensor value
