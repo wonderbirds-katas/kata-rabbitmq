@@ -13,8 +13,6 @@ namespace katarabbitmq.bdd.tests.Steps
     [Binding]
     public class SharedStepDefinitions : IDisposable
     {
-        private const string ExpectedMessageAfterRabbitMqConnected = "Established connection to RabbitMQ";
-
         public static List<TestProcessWrapper> Clients { get;  } = new();
         private readonly ITestOutputHelper _testOutputHelper;
         public static TestProcessWrapper Robot { get; private set; }
@@ -27,40 +25,21 @@ namespace katarabbitmq.bdd.tests.Steps
         [Given(@"the robot and (.*) clients are running")]
         public void GivenTheRobotAndClientsAreRunning(int numberOfClients)
         {
-            var isCoverletEnabled = true;
             for (var clientIndex = 0; clientIndex < numberOfClients; clientIndex++)
             {
-                var client = new TestProcessWrapper("kata-rabbitmq.client.app", isCoverletEnabled);
+                var client = new TestProcessWrapper("kata-rabbitmq.client.app", false);
                 client.TestOutputHelper = _testOutputHelper;
-
-                client.AddEnvironmentVariable("RabbitMq__HostName", RabbitMq.Hostname);
-                client.AddEnvironmentVariable("RabbitMq__Port",
-                    RabbitMq.Port.ToString(CultureInfo.InvariantCulture));
-                client.AddEnvironmentVariable("RabbitMq__UserName", RabbitMq.Username);
-                client.AddEnvironmentVariable("RabbitMq__Password", RabbitMq.Password);
-
-                client.AddReadinessCheck(output => output.Contains(ExpectedMessageAfterRabbitMqConnected));
-
+                client.ConfigureRabbitMq();
                 client.Start();
 
                 Clients.Add(client);
-
-                isCoverletEnabled = false;
             }
 
             Assert.True(Clients.All(c => c.IsRunning));
 
             Robot = new TestProcessWrapper("kata-rabbitmq.robot.app", true);
             Robot.TestOutputHelper = _testOutputHelper;
-
-            Robot.AddEnvironmentVariable("RabbitMq__HostName", RabbitMq.Hostname);
-            Robot.AddEnvironmentVariable("RabbitMq__Port",
-                RabbitMq.Port.ToString(CultureInfo.InvariantCulture));
-            Robot.AddEnvironmentVariable("RabbitMq__UserName", RabbitMq.Username);
-            Robot.AddEnvironmentVariable("RabbitMq__Password", RabbitMq.Password);
-
-            Robot.AddReadinessCheck(output => output.Contains(ExpectedMessageAfterRabbitMqConnected));
-
+            Robot.ConfigureRabbitMq();
             Robot.Start();
 
             Assert.True(Robot.IsRunning);
