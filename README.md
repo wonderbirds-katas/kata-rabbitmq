@@ -31,7 +31,7 @@ Many thanks to [JetBrains](https://www.jetbrains.com/?from=kata-rabbitmq) who pr
    1. consumes the message from the queue and displays them on the screen
    2. acknowledges the messages it consumed
 
-4. Extend the application such that multiple robot monitor applications can consume and display messages. 
+4. Extend the application such that multiple robot monitor applications can consume and display messages (pub-sub pattern). 
 
 999. Further Ideas: Consider the information in section "Important Production Related Documentation" below
 
@@ -218,17 +218,14 @@ The report will be created as `dupfinder-report.html` in the current directory.
 
 * VMWare, Inc. or its affiliates: [RabbitMQ](https://www.rabbitmq.com/)
 * VMWare, Inc. or its affiliates: [RabbitMQ Documentation](https://www.rabbitmq.com/documentation.html)
-
-### Programming Related Documentation
-
 * VMWare, Inc. or its affiliates: [RabbitMQ .NET/C# Client API Guide](https://www.rabbitmq.com/dotnet-api-guide.html)
-* [RabbitMQ Tutorials](https://www.rabbitmq.com/getstarted.html)
+* VMWare, Inc. or its affiliates: [RabbitMQ Tutorials](https://www.rabbitmq.com/getstarted.html)
+* VMWare, Inc. or its affiliates: [RabbitMQ .NET Client API Documentation](http://rabbitmq.github.io/rabbitmq-dotnet-client/api/RabbitMQ.Client.html)
 * GitHub: [rabbitmq / rabbitmq-tutorials](https://github.com/rabbitmq/rabbitmq-tutorials)
-* [RabbitMQ .NET Client API Documentation](http://rabbitmq.github.io/rabbitmq-dotnet-client/api/RabbitMQ.Client.html)
 * GitHub: [rabbitmq / rabbitmq-dotnet-client](https://github.com/rabbitmq/rabbitmq-dotnet-client)
 * DockerHub: [RabbitMQ](https://hub.docker.com/_/rabbitmq)
 
-### Important Production Related Documentation
+### Important RabbitMQ Production Related Documentation
 
 * VMWare, Inc. or its affiliates: [RabbitMQ Consumer Acknowledgements and Publisher Confirms](https://www.rabbitmq.com/confirms.html)
 * VMWare, Inc. or its affiliates: [RabbitMQ Production Checklist](https://www.rabbitmq.com/production-checklist.html)
@@ -251,8 +248,3 @@ The report will be created as `dupfinder-report.html` in the current directory.
 * [EditorConfig.org](https://editorconfig.org)
 * GitHub: [dotnet / roslyn - .editorconfig](https://github.com/dotnet/roslyn/blob/master/.editorconfig)
 * Check all the badges on top of this README
-
-## Template For New Links
-
-* [ ]( )
-* [ ]( )
