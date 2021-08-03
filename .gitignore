@@ -1,8 +1,15 @@
+# Coverage reports
+report
+
+# Code Metrics - metrix++
+/metrixpp.db
+
 # Code Duplication - dupfinder
 dupfinder-report.*
 
 #SpecFlow Stuff
 *.feature.cs
+SpecFlow/
 
 ### MacOS filesystem helpers ###
 .DS_Store
@@ -391,11 +398,13 @@ MigrationBackup/
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
 # User-specific stuff
+.idea/**/indexLayout.xml
 .idea/**/workspace.xml
 .idea/**/tasks.xml
 .idea/**/usage.statistics.xml
 .idea/**/dictionaries
 .idea/**/shelf
+.idea/**/indexLayout.xml
 
 # Generated files
 .idea/**/contentModel.xml
@@ -420,7 +429,8 @@ MigrationBackup/
 # .idea/artifacts
 # .idea/compiler.xml
 # .idea/jarRepositories.xml
-# .idea/modules.xml
+.idea/**/modules.xml
+.idea/**/riderModule.iml
 # .idea/*.iml
 # .idea/modules
 # *.iml
