@@ -9,11 +9,7 @@
 [![CodeScene Code Health](https://codescene.io/projects/11051/status-badges/code-health)](https://codescene.io/projects/11051/jobs/latest-successful/results)
 [![CodeScene System Mastery](https://codescene.io/projects/11051/status-badges/system-mastery)](https://codescene.io/projects/11051/jobs/latest-successful/results)
 
-In this kata you learn how to use [RabbitMQ](https://www.rabbitmq.com).
-
-**Attention**
-
-This project is incomplete at the moment.
+In this kata you learn the basics of using [RabbitMQ](https://www.rabbitmq.com).
 
 ## Thanks
 
@@ -33,7 +29,7 @@ Many thanks to [JetBrains](https://www.jetbrains.com/?from=kata-rabbitmq) who pr
 
 4. Extend the application such that multiple robot monitor applications can consume and display messages (pub-sub pattern). 
 
-999. Further Ideas: Consider the information in section "Important Production Related Documentation" below
+5. Further Ideas: Consider the information in section "Important Production Related Documentation" below
 
 # Development
 
