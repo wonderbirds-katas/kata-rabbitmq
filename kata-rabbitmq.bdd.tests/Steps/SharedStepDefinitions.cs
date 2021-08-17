@@ -27,9 +27,7 @@ namespace katarabbitmq.bdd.tests.Steps
         {
             for (var clientIndex = 0; clientIndex < numberOfClients; clientIndex++)
             {
-                var isCoverletEnabled = clientIndex == numberOfClients - 1;
-
-                var client = new TestProcessWrapper("kata-rabbitmq.client.app", isCoverletEnabled);
+                var client = new TestProcessWrapper("kata-rabbitmq.client.app", false);
                 client.TestOutputHelper = _testOutputHelper;
                 client.ConfigureRabbitMq();
                 client.Start();
