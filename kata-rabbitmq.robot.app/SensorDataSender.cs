@@ -40,13 +40,23 @@ namespace katarabbitmq.robot.app
 
             Rabbit.Channel.BasicPublish("robot", "", null, body);
 
+            // TODO: Fix static analysis warnings about deprecated logging mechanisms
+#pragma warning disable CA1848
+#pragma warning disable CA2254
             _logger.LogInformation($"Sensor data: '{message}'");
+#pragma warning restore CA2254
+#pragma warning restore CA1848
         }
 
         protected override void OnShutdownService()
         {
             base.OnShutdownService();
+            // TODO: Fix static analysis warnings about deprecated logging mechanisms
+#pragma warning disable CA1848
+#pragma warning disable CA2254
             _logger.LogInformation($"Sent {_numberOfMeasurements} sensor values.");
+#pragma warning restore CA2254
+#pragma warning restore CA1848
         }
     }
 }
