@@ -10,35 +10,61 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 6.0.x
+
     - name: Install dotnet global tools (coverlet, reportgenerator)
       run: |
         dotnet tool install --global coverlet.console
         dotnet tool install --global dotnet-reportgenerator-globaltool
+
     - name: Install dependencies
       run: dotnet restore
+
     - name: Build
       run: dotnet build --configuration Debug --no-restore
+
     - name: Test with coverage
       run: dotnet test --no-restore --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput='./TestResults/coverage.cobertura.xml'
+
     - name: Generate coverage reports
       run: reportgenerator "-reports:kata-rabbitmq.bdd.tests/TestResults/*.xml" "-targetdir:kata-rabbitmq.bdd.tests/TestResults/report" "-reporttypes:Html;lcov" "-title:Kata RabbitMQ"
+
     - name: Attach coverage report to build artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: coverage-report
+        name: coverage-reports
         path: kata-rabbitmq.bdd.tests/TestResults/report
-    - name: Publish coverage report to coveralls.io
+
+  publish-reports:
+    runs-on: ubuntu-latest
+    name: Publish coverage reports
+    if: github.ref == 'refs/heads/main'
+    
+    needs: build-and-test
+    
+    steps:
+      # the repository is required by codeclimate-action
+      - uses: actions/checkout@v2
+
+      - name: Download coverage reports
+        uses: actions/download-artifact@v2
+        with:
+          name: coverage-reports
+          path: coverage-reports
+
+      - name: Publish coverage report to coveralls.io
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        path-to-lcov: kata-rabbitmq.bdd.tests/TestResults/report/lcov.info
+        path-to-lcov: coverage-reports/lcov.info
+
     - name: Publish coverage report to CodeClimate
       uses: paambaati/codeclimate-action@v2.7.4
       env:
         CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
       with:
-        coverageLocations: kata-rabbitmq.bdd.tests/TestResults/report/lcov.info:lcov
+        coverageLocations: coverage-reports/lcov.info:lcov
