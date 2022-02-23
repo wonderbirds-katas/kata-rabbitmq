@@ -37,7 +37,12 @@ namespace katarabbitmq.infrastructure
             }
             catch (Exception e)
             {
+                // TODO: Fix static analysis warnings about deprecated logging mechanisms
+#pragma warning disable CA1848
+#pragma warning disable CA2254
                 Logger.LogCritical(e.ToString());
+#pragma warning restore CA2254
+#pragma warning restore CA1848
             }
             finally
             {
@@ -47,8 +52,11 @@ namespace katarabbitmq.infrastructure
 
         private void RegisterCancellationRequest(CancellationToken stoppingToken)
         {
+            // TODO: Fix static analysis warnings about deprecated logging mechanisms
+#pragma warning disable CA1848
             Logger.LogInformation("Waiting for cancellation request");
             stoppingToken.Register(() => Logger.LogInformation("STOP request received"));
+#pragma warning restore CA1848
             stoppingToken.ThrowIfCancellationRequested();
         }
 
@@ -64,12 +72,15 @@ namespace katarabbitmq.infrastructure
 
         private void ShutdownService()
         {
+            // TODO: Fix static analysis warnings about deprecated logging mechanisms
+#pragma warning disable CA1848
             Logger.LogInformation("Shutting down ...");
 
             Rabbit.Disconnect();
             OnShutdownService();
 
             Logger.LogDebug("Shutdown complete.");
+#pragma warning restore CA1848
         }
 
         protected virtual void OnShutdownService()
