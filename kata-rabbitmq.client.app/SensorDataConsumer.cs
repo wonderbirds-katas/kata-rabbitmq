@@ -48,12 +48,8 @@ namespace katarabbitmq.client.app
             var message = Encoding.UTF8.GetString(body);
             var measurement = JsonConvert.DeserializeObject<LightSensorValue>(message);
 
-            // TODO: Fix static analysis warnings about deprecated logging mechanisms
-#pragma warning disable CA1848
-#pragma warning disable CA2254
-            _logger.LogInformation($"Sensor data: {measurement}");
-#pragma warning restore CA2254
-#pragma warning restore CA1848
+            _logger.SensorData(measurement);
+
             ++_numberOfMeasurements;
         }
 
