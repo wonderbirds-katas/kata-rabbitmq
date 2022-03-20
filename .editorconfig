@@ -4,6 +4,15 @@ root = true
 # C# files
 [*.cs]
 
+#### kata-rabbitmq custom configuration
+
+# CA1848: Use the LoggerMessage delegates
+# In this sample project we do not need high performance logging.
+# It adds complexity which hinders to understand and further develop this learning project.
+dotnet_diagnostic.CA1848.severity = none
+
+#### End of kata-rabbitmq custom configuration
+
 #### Core EditorConfig Options ####
 
 # Indentation and spacing

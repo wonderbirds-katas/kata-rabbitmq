@@ -31,9 +31,6 @@ namespace katarabbitmq.infrastructure
                 return;
             }
 
-            // TODO: Fix static analysis warnings about deprecated logging mechanisms
-#pragma warning disable CA1848
-#pragma warning disable CA2254
             try
             {
                 _logger.LogDebug("Connecting to RabbitMQ ...");
@@ -49,16 +46,14 @@ namespace katarabbitmq.infrastructure
                 QueueName = queueDeclareOk.QueueName;
                 Channel.QueueBind(QueueName, "robot", "", null);
 
-                _logger.LogInformation($"Established connection to RabbitMQ, queue name {QueueName}.");
+                _logger.LogInformation("Established connection to RabbitMQ, queue name {QueueName}", QueueName);
             }
             catch (Exception e)
             {
-                _logger.LogDebug(e.Message);
+                _logger.LogDebug("{ExceptionMessage}", e.Message);
                 Channel = null;
                 Connection = null;
             }
-#pragma warning restore CA2254
-#pragma warning restore CA1848
         }
 
         public void Disconnect()
@@ -83,15 +78,10 @@ namespace katarabbitmq.infrastructure
                 Password = _configuration["RabbitMq:Password"]
             };
 
-            // TODO: Fix static analysis warnings about deprecated logging mechanisms
-#pragma warning disable CA1848
-#pragma warning disable CA2254
-            _logger.LogDebug($"RabbitMQ HostName: {connectionFactory.HostName}");
-            _logger.LogDebug($"RabbitMQ Port: {connectionFactory.Port}");
-            _logger.LogDebug($"RabbitMQ UserName: {connectionFactory.UserName}");
-            _logger.LogDebug($"RabbitMQ ClientProvidedName: {connectionFactory.ClientProvidedName}");
-#pragma warning restore CA2254
-#pragma warning restore CA1848
+            _logger.LogDebug("RabbitMQ HostName: {HostName}", connectionFactory.HostName);
+            _logger.LogDebug("RabbitMQ Port: {Port}", connectionFactory.Port);
+            _logger.LogDebug("RabbitMQ UserName: {UserName}", connectionFactory.UserName);
+            _logger.LogDebug("RabbitMQ ClientProvidedName: {ClientProvidedName}", connectionFactory.ClientProvidedName);
 
             return connectionFactory;
         }
